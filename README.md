@@ -64,6 +64,8 @@ gpg -d data.tgz.gpg  | tar -xz
 ```
 To get the passphrase, send me an email.
 
+[comment]: # (AnatomyBodyExtremitiesUpperHand)
+
 - - -
 
 ## Technical part
