@@ -58,7 +58,7 @@ The only required dependencies you should've installed on your system in order t
 
 ### Data
 
-Data are symetricly encrypted with GPG using a passphrase. To decrypt the file use the following command:
+Data are symmetrically encrypted with GPG using a passphrase. To decrypt the file use the following command:
 ```bash
 gpg -d data.tgz.gpg  | tar -xz
 ```
