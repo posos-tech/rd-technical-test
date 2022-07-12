@@ -62,26 +62,26 @@ Data are symmetrically encrypted with GPG using a passphrase. To decrypt the fil
 ```bash
 gpg -d data.tgz.gpg  | tar -xz
 ```
-To get the passphrase, send me an email.
-
-[comment]: # (AnatomyBodyExtremitiesUpperHand)
+To get the passphrase, send an email to research@posos.fr.
 
 - - -
 
 ## Technical part
 
+The problem we are tackling is a binary classification problem in which we aim to classify whether a string contains posology instructions. The input text is the result of an OCR system on prescription scans, which explains why most inputs may contain spelling mistakes. Notably, drug names that appear on their own without further instruction are not considered posology instructions.
+
 ### Building a model
 
 Building a machine learning model consist, non extensively, into the following parts:
+  - Explore the data to get a few insights
   - split the training data into a train and a validation set;
   - build and train a model on the train set;
-  - obtain micro and macro precision, recall and F1 score over the validation set;
-  - get a confusion matrix over the valiadtion set
+  - obtain precision, recall and F1 score over the validation set;
   - export the model in a suitable format to be served
 
 The built model should be built with:
-  - an encoder part, which produces a vector representation of the input text. To build this encoder part, you can start with a TF IDF encoder, or use a neural encoder;
-  - a decoder part, which consists here of a classifier. You may want to start with SVM and then use a neural decoder.
+  - an vectorizer part, which produces a vector representation of the input text.
+  - a decoder part, which consists here of a classifier. Due to the low number of examples, a simple classification model should work well enough.
 
 The `train` rule have to build the training image defined in `train.Dockerfile` and run a container in which those steps are executed.
 
@@ -90,22 +90,20 @@ The `train` rule have to build the training image defined in `train.Dockerfile` 
 To integrate the model into a larger applicaiton in some way, 
 
 - serve the model using a CPU only machine;
-- build a web application - endpoint - using route `/intent` on port `4002` - to use the served model as a microservice;
+- build a web application - endpoint - using route `/posology` on port `4002` - to use the served model as a microservice;
 - the endpoint should return a json response whos format is specified at the end of the section;
 
-A functional approach is to build a model server. This is an application to manage and serve models, which allow to serve multiple versions of a same model and get distinct inferences for each version. You can find more details of the way that tensorflow works to put model into production [here](https://www.tensorflow.org/tfx/serving/serving_basic), using a model server available as a [docker image](https://hub.docker.com/r/tensorflow/serving).
-
-The `api` rule have to take the exported model from the `train` rule and start a microservice as a container defined in an `api.Dockerfile` image.
+The `api` rule has to take the exported model from the `train` rule and start a microservice as a container defined in an `api.Dockerfile` image.
 
 Once the microservice has been started, you should be abble to request it using the following command:
 ```bash
-curl -G "http://localhost:4002/intent" --data-urlencode "query=risques poisson cru pendant la grossesse ?" | jq
+curl -G "http://localhost:4002/posology" --data-urlencode "query=1 comprimé matin midi et soir" | jq
 ```
 And get the following response format:
 ```json
 {
-    "intent": 26,
-    "probability": "0.73356545"
+    "query": "1 comprimé matin midi et soir",
+    "is_posology": True
 }
 ```
 
@@ -117,7 +115,7 @@ make train; make api
 ```
 And get response from:
 ```
-curl -G "http://localhost:4002/intent" --data-urlencode "query=risques poisson cru pendant la grossesse ?" | jq
+curl -G "http://localhost:4002/posology" --data-urlencode "query=1 comprimé matin midi et soir" | jq
 ```
 
 - - -
@@ -155,19 +153,13 @@ Examples of docker images can be found in [examples directory](/examples/docker)
 
 ## Bonus part
 
-- Implement a `test` in your Makefile to request the api with the provided test set to get predictions in a `(ID,question,intent)` format saved to a `predictions.csv` file in the root of your repository;
-- Use of an hyperparameter optimizer on a fixed validation set;
-- Quantify the variability of model performance;
+- Quantify the variability of model performance
 - Build a web interface for the API.
 
 - - -
 
 ## How to get help
 
-For any help send me an email.
+For any help send an email to research@posos.fr
 
 - - -
-
-## Contributing
-
-For any contribution, open an issue so we can talk about it.

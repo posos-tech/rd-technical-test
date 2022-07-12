@@ -1,5 +1,4 @@
-# Use the official docker image for python3.7
-FROM python:3.7
+FROM python:3.10-slim-buster
 
 # Define uid and gid arguments (passed during docker build command)
 ARG user=appuser
@@ -19,14 +18,10 @@ RUN chown -R ${user}:${group} /home/${user}
 ENV PATH="/home/${user}/.local/bin/:${PATH}"
 
 # Change user
-USER appuser
+USER ${user}
 
 # Install jupyterlab in container
-RUN pip3 install --user jupyterlab
-# Install python packages
-RUN pip3 install --user sklearn
-RUN pip3 install --user "dask[complete]"
-RUN pip3 install --user annoy
+RUN pip3 install --user jupyterlab sklearn pandas
 
 # When the container launches, launches a jupyterlab instance
-CMD ["jupyter", "lab", "--no-browser", "--notebook-dir='/home/appuser'", "--ip=0.0.0.0", "--log-level='INFO'"]
+CMD ["jupyter", "lab", "--no-browser", "--notebook-dir='/app/examples'", "--ip=0.0.0.0", "--log-level='INFO'"]
