@@ -81,9 +81,9 @@ Building a machine learning model consist, non extensively, into the following p
 
 The built model should be built with:
   - an vectorizer part, which produces a vector representation of the input text.
-  - a decoder part, which consists here of a classifier. Due to the low number of examples, a simple classification model should work well enough.
+  - a decoder part, which consists here of a classifier. Due to the low number and diversity of positive examples, a simple classification model should work well enough.
 
-The `train` rule have to build the training image defined in `train.Dockerfile` and run a container in which those steps are executed.
+The `train` rule has to build the training image defined in `train.Dockerfile` and run a container in which those steps are executed.
 
 ### Serving a model as a microservice
 
@@ -95,7 +95,7 @@ To integrate the model into a larger applicaiton in some way,
 
 The `api` rule has to take the exported model from the `train` rule and start a microservice as a container defined in an `api.Dockerfile` image.
 
-Once the microservice has been started, you should be abble to request it using the following command:
+Once the microservice has been started, you should be able to request it using the following command:
 ```bash
 curl -G "http://localhost:4002/posology" --data-urlencode "query=1 comprimé matin midi et soir" | jq
 ```
