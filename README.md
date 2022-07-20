@@ -68,7 +68,7 @@ To get the passphrase, send an email to research@posos.fr.
 
 ## Technical part
 
-The problem we are tackling is a binary classification problem in which we aim to classify whether a string contains posology instructions. The input text is the result of an OCR system on prescription scans, which explains why most inputs may contain spelling mistakes. Notably, drug names that appear on their own without further instruction are not considered posology instructions.
+The problem we are tackling is a binary classification problem in which we aim to classify whether a string contains posology instructions. The input text is the result of an OCR system on prescription scans, which explains why most inputs may contain spelling mistakes. Notably, drug names that appear on their own without further instruction are not considered posology instructions. The data is split in two files : one for positive examples (positive_examples_posology.csv - containing a posology instruction) and one for negative examples (negative_examples_posology.csv).
 
 ### Building a model
 
